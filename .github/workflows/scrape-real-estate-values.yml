@@ -2,11 +2,9 @@ name: Scrape Real Estate Values
 
 on:
   schedule:
-    # Run every Friday at 8:00 PM EST (which is 1:00 AM UTC Saturday during EST, 12:00 AM UTC Saturday during EDT)
-    # Note: GitHub Actions uses UTC time. During EST (winter), 8 PM Friday EST = 1 AM Saturday UTC
-    # During EDT (summer), 8 PM Friday EDT = 12 AM Saturday UTC
-    # Using 1 AM UTC Saturday to target 8 PM Friday EST (adjust to '0 0 * * 6' for EDT if needed)
-    - cron: '0 1 * * 6'
+    # Run every Saturday at 12:00 PM EST (5:00 PM UTC)
+    # This gives the county time to update their data on Friday
+    - cron: '0 17 * * 6'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
