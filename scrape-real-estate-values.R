@@ -454,13 +454,14 @@ update_real_estate_time_series <- function(output_file = here("data", "muni-real
         mutate(scrape_week = as.Date(get_week_friday(as.Date(scraped_at))))
     }
 
-    # Check if we already have data for this week
-    if (scrape_week %in% as.Date(historical_data$scrape_week)) {
-      cat("Data for week of", as.character(scrape_week), "already exists.\n")
-      cat("Replacing with fresh data for this week...\n")
-      # Remove existing data for this week
+    # Check if we already have data for this value_as_of_date
+    current_value_as_of <- unique(new_data$value_as_of_date)
+    current_value_as_of <- current_value_as_of[!is.na(current_value_as_of)]
+    if (length(current_value_as_of) > 0 && current_value_as_of[1] %in% historical_data$value_as_of_date) {
+      cat("Data for value_as_of_date", current_value_as_of[1], "already exists.\n")
+      cat("Replacing with fresh data...\n")
       historical_data <- historical_data %>%
-        filter(as.Date(scrape_week) != !!scrape_week)
+        filter(!(value_as_of_date %in% current_value_as_of))
     }
 
     # Append new data to historical data
