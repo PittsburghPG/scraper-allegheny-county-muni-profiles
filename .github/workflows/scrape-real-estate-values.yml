@@ -2,9 +2,10 @@ name: Scrape Real Estate Values
 
 on:
   schedule:
-    # Run every Saturday at 9:00 PM UTC (4:00 PM EST)
-    # This gives the county time to update their data on Friday
-    - cron: '0 21 * * 6'
+    # Run daily at 9:00 PM UTC (4:00 PM EST)
+    # County usually updates Fridays but schedule is unreliable
+    # Script checks for new data first and skips if unchanged
+    - cron: '0 21 * * *'
   workflow_dispatch: # Allow manual triggering
 
 jobs:

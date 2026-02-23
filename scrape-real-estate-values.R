@@ -418,6 +418,22 @@ update_real_estate_time_series <- function(output_file = here("data", "muni-real
   cat("=== Real Estate Values Time Series Update ===\n")
   cat("Starting scrape at:", as.character(Sys.time()), "\n\n")
 
+  # Check if the county has new data before doing the full scrape
+  cat("Checking county website for new data...\n")
+  check_page <- read_html("https://apps.alleghenycounty.us/website/MuniProfile.asp?muni=1")
+  current_value_date <- extract_value_as_of_date(check_page)
+  cat("County 'Value As Of' date:", current_value_date, "\n")
+
+  if (!is.na(current_value_date) && file.exists(output_file)) {
+    existing_data <- read_csv(output_file, show_col_types = FALSE)
+    if (current_value_date %in% existing_data$value_as_of_date) {
+      cat("No new data. value_as_of_date", current_value_date, "already captured. Skipping.\n")
+      return(invisible(NULL))
+    }
+  }
+
+  cat("New data found! Proceeding with full scrape...\n\n")
+
   # Scrape current values
   new_data <- scrape_all_real_estate_values()
 
